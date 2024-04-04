@@ -1,0 +1,25 @@
+# Bytecode Python compilé
+__pycache__/
+*.py[cod]
+
+# Fichiers de package
+*.egg-info/
+dist/
+build/
+
+# Fichiers de configuration locaux
+instance/
+
+# Fichier de base de données SQLite, si utilisé
+*.db
+
+# Fichiers de journalisation
+*.log
+
+# Dossier de l'environnement virtuel
+.venv/
+
+# Fichiers de l'éditeur
+.vscode/
+.idea/
+*.swp
