@@ -1,23 +1,26 @@
 {% extends 'base.html' %}
 
-{% block title %}Bienvenue sur LaZone{% endblock %}
+{% block title %}Tableau de Bord Admin{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Tous les produits</h2>
     <div class="row">
         {% for product in products %}
         <div class="col-md-4 mb-4">
-            <div class="card" style="cursor: pointer;" onclick="window.location.href='{{ url_for('product.productDetail', product_id=product.id) }}';">
+            <div class="card">
                 <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="width: 100%;">
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">{{ product.description | default('No description available', true) }}</p>
                     <p class="card-text">Prix: {{ "%.2f"|format(product.price) }}€</p>
+                    <p class="card-text">Stock: {{ product.stock }}</p>
+                    <p class="card-text">Categorie: {{ product.category.name }}</p>
+                    <p class="card-text">Marque: {{ product.brand.name }}</p>
+                    <a href="{{ url_for('productEdit.edit_product', product_id=product.id) }}" class="btn btn-block btn-danger" style="width: 100%; margin-top: 10px;">Modifier</a>
                 </div>
             </div>
         </div>
-        {% if (loop.index0 + 1) % 3 == 0 %}
+        {% if loop.index % 3 == 0 %}
             </div><div class="row">
         {% endif %}
         {% endfor %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Éditer Profil{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Éditer Profil</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="first_name">Prénom</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de Passe</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Entrez un nouveau mot de passe">
+        </div>
+        <div class="form-group">
+            <label for="image_url">Image actuelle</label>
+            <img src="{{ user.profil_image_url }}" alt="Current Image" class="img-fluid mb-3" style="width: 10%;">
+            <label for="new_image_url">Changer l'image</label>
+            <input type="file" class="form-control-file" id="new_image_url" name="image_url">
+        </div>
+        <button type="submit" class="btn btn-primary">Mettre à Jour</button>
+    </form>
+</div>
+{% endblock %}

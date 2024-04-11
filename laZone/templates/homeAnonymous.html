@@ -4,11 +4,13 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Tous les produits</h2>
+    <h2>Bienvenue</h2>
+    <p>Creez un compte ou connectez vous pour profiter des dernieres nouveautées</p>
+
     <div class="row">
         {% for product in products %}
         <div class="col-md-4 mb-4">
-            <div class="card" style="cursor: pointer;" onclick="window.location.href='{{ url_for('product.productDetail', product_id=product.id) }}';">
+            <div class="card" style="cursor: pointer;" onclick="window.location.href='{{ url_for('productEdit.edit_product', product_id=product.id) }}';">
                 <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="width: 100%;">
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>

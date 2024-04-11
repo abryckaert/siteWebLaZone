@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier Produit{% endblock %}
+
+{% block content %}
+<h1>Modifier un produit</h1>
+<div class="container mt-4">
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Nom du produit</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3">{{ product.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="price">Prix</label>
+            <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="stock">Stock</label>
+            <input type="number" class="form-control" id="stock" name="stock" value="{{ product.stock }}" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Catégorie</label>
+            <input type="text" class="form-control" id="category" name="category" value="{{ product.category }}" required>
+        </div>
+        <div class="form-group">
+            <label for="brand">Marque</label>
+            <input type="text" class="form-control" id="brand" name="brand" value="{{ product.brand }}" required>
+        </div>
+        <div class="form-group">
+            <label for="image_url">Image actuelle</label>
+            <img src="{{ product.image_url }}" alt="Current Image" class="img-fluid mb-3" style="width: 20%;">
+            <label for="new_image_url">Changer l'image</label>
+            <input type="file" class="form-control-file" id="new_image_url" name="image_url">
+        </div>
+        <button type="submit" class="btn btn-primary">Mettre à jour le produit</button>
+    </form>
+</div>
+{% endblock %}

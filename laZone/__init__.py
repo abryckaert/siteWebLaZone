@@ -1,45 +1,49 @@
+import os
 from flask import Flask
 from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
-import os  
-
-db = SQLAlchemy()
+from .extensions import db  
+from .admin import admin_bp
+from .views import views
+from .auth import auth
+from .productsAdmin import product
+from .products import product_blueprint
+from .editProfile import edit
 
 DB_NAME = "database.db"
 
-def creation_App():
+def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'jkzfjcfbnmjsnmzn'
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'UneCleParDefautSecrète')  # Utilisation de variables d'environnement pour la clé secrète
     basedir = os.path.abspath(os.path.dirname(__file__))
     db_path = os.path.join(basedir, DB_NAME)
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'    
-    db.init_app(app)
-
-    from .views import views
-    from .auth import auth
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    
+    db.init_app(app)  
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(product)  
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(product_blueprint)  
+    app.register_blueprint(edit)
 
-    from .models import User, Product, Order, OrderItem
-
-    create_database(app)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
     @login_manager.user_loader
-    def load_user(id):
-        return User.query.get(int(id))
+    def load_user(user_id):
+        from .models import User  
+        return User.query.get(int(user_id))
 
-    return app
+    create_database(app)  
 
     return app
 
 def create_database(app):
-    if not os.path.isfile(os.path.join(os.path.abspath(os.path.dirname(__file__)), DB_NAME)):
-        with app.app_context():
+    """Crée la base de données si elle n'existe pas déjà."""
+    with app.app_context():
+        if not os.path.exists(DB_NAME):
             db.create_all()
-        print('Created Database!')
+            print('Created Database!')

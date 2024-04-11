@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajout produit{% endblock %}
+
+{% block content %}
+<h1>Ajouter un produit</h1>
+<div class="container mt-4">
+    <form action="{{ url_for('productEdit.add_product') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="productName">Nom du produit</label>
+            <input type="text" class="form-control" id="productName" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="productDescription">Description</label>
+            <textarea class="form-control" id="productDescription" name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="productPrice">Prix</label>
+            <input type="number" class="form-control" id="productPrice" name="price" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="productStock">Stock</label>
+            <input type="number" class="form-control" id="productStock" name="stock" required>
+        </div>
+        <div class="form-group">
+            <label for="productCategory">Catégorie</label>
+            <select class="form-control" id="productCategory" name="category_id">
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="productBrand">Marque</label>
+            <select class="form-control" id="productBrand" name="brand_id">
+                {% for brand in brands %}
+                    <option value="{{ brand.id }}">{{ brand.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="productImage">Image</label>
+            <input type="file" class="form-control-file" id="productImage" name="image_url">
+        </div>
+        <button type="submit" class="btn btn-primary">Ajouter le produit</button>
+    </form>
+</div>
+{% endblock %}

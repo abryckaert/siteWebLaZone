@@ -1,6 +1,6 @@
-from laZone import creation_App
+from laZone import create_app
 
-application = creation_App()
+application = create_app()
 
 if __name__ == '__main__':
     application.run(debug=True)
