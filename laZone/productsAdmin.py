@@ -117,3 +117,12 @@ def edit_comment(comment_id):
         flash("Comment updated successfully.", "success")
         return redirect(url_for('productEdit.list_comments'))
     return render_template('editCommentAdmin.html', feedback=feedback)
+
+@product.route('/admin/productEdit/delete_product/<int:product_id>', methods=['POST'])
+@login_required
+def delete_product(product_id):
+    product = Product.query.get_or_404(product_id)
+    db.session.delete(product)
+    db.session.commit()
+    flash('Produit supprimé avec succès.', 'success')
+    return redirect(url_for('productEdit.list_product'))
