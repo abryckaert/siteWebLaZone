@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}List of Comments{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Comments on Products</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produits</th>
+                <th>Commentaires</th>
+                <th>Utilisateurs</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for feedback, product in comments %}
+            <tr>
+                <td>
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 50px; height: auto;">
+                    {{ product.name }}
+                </td>
+                <td>{{ feedback.content }}</td>
+                <td>{{ feedback.feedback_user.first_name }}</td>
+                <td>{{ feedback.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('productEdit.edit_comment', comment_id=feedback.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
+                    <a href="{{ url_for('productEdit.delete_comment', comment_id=feedback.id) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">=Pas de commentaire disponible</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

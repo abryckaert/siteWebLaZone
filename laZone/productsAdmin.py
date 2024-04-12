@@ -1,9 +1,10 @@
+from urllib.request import Request
 from flask import Blueprint, Flask, current_app, request, redirect, url_for, render_template, flash
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 import os
 from .extensions import db
-from .models import Product
+from .models import Feedback, Product
 from .models import Brand
 from .models import Category
 
@@ -52,33 +53,67 @@ def list_product():
     products = Product.query.all()
     return render_template('listProductAdmin.html', products=products)
 
-@product.route('/edit_product/<int:product_id>', methods=['GET', 'POST'])
 @login_required
+@product.route('/edit_product/<int:product_id>', methods=['GET', 'POST'])
 def edit_product(product_id):
     product = Product.query.get_or_404(product_id)
-    if request.method == 'POST':
-        product.name = request.form['name']
-        product.description = request.form['description']
-        product.price = float(request.form['price'])
-        product.stock = int(request.form['stock'])
-        category_id = request.form['category_id']  # Assure-toi que c'est 'category_id' et que tu as ce champ dans ton formulaire
-        category = Category.query.get(category_id)
-        if not category:
-            flash('Category not found.', 'error')
-            return redirect(url_for('edit_product', product_id=product_id))
-        
-        product.category = category
+    categories = Category.query.all()
+    brands = Brand.query.all()
 
-        brand_id = request.form['brand_id']
-        brand = Brand.query.get(brand_id)
-        if not brand:
-            flash('Brand not found.', 'error')
-            return redirect(url_for('edit_product', product_id=product_id))
-        
-        product.brand = brand
-        
+    if request.method == 'POST':
+        try:
+            product.name = request.form['name']
+            product.description = request.form['description']
+            product.price = float(request.form.get('price', 0))  # Safely getting form data
+            product.stock = int(request.form.get('stock', 0))
+            product.category_id = int(request.form.get('category_id'))
+            product.brand_id = int(request.form.get('brand_id'))
+
+            if not Category.query.get(product.category_id):
+                raise Request("Selected category does not exist.")
+            if not Brand.query.get(product.brand_id):
+                raise Request("Selected brand does not exist.")
+
+            db.session.commit()
+            flash('Product updated successfully!', 'success')
+            return redirect(url_for('productEdit.list_product'))
+        except KeyError as e:
+            flash(f"Missing data: {str(e)}", 'error')
+        except ValueError as e:
+            flash(f"Invalid data format: {str(e)}", 'error')
+        except Request as e:
+            flash(str(e), 'error')
+
+    return render_template('editProductAdmin.html', product=product, categories=categories, brands=brands)
+
+@product.route('/delete_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Feedback.query.get_or_404(comment_id)
+    if comment:
+        db.session.delete(comment)
         db.session.commit()
-        flash('Product updated successfully!', 'success')
-        return redirect(url_for('list_all_products'))
+        flash("Comment deleted successfully.", "success")
     else:
-        return render_template('editProductAdmin.html', product=product)
+        flash("Comment not found.", "error")
+    return redirect(url_for('productEdit.list_comments'))
+
+from flask import render_template
+from .models import Feedback, Product
+
+@product.route('/list_comments', methods=['GET'])
+@login_required
+def list_comments():
+    comments = db.session.query(Feedback, Product).join(Product, Feedback.product_id == Product.id).all()
+    return render_template('feedbackManagement.html', comments=comments)
+
+@product.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
+@login_required
+def edit_comment(comment_id):
+    feedback = Feedback.query.get_or_404(comment_id)
+    if request.method == 'POST':
+        feedback.content = request.form['content']
+        db.session.commit()
+        flash("Comment updated successfully.", "success")
+        return redirect(url_for('productEdit.list_comments'))
+    return render_template('editCommentAdmin.html', feedback=feedback)

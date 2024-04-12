@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Panier d'achat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Votre Panier</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Produit</th>
+                <th>Prix unitaire</th>
+                <th>Quantité</th>
+                <th>Sous-total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td style="vertical-align: middle;">
+                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="width: 70px; height: auto;"> 
+                </td>
+                <td style="vertical-align: middle;">{{ item.product.name }}</td>
+                <td style="vertical-align: middle;">{{ "%.2f"|format(item.product.price) }} €</td>
+                <td style="vertical-align: middle;">{{ item.quantity }}</td>
+                <td style="vertical-align: middle;">{{ "%.2f"|format(item.product.price * item.quantity) }} €</td>
+                <td style="vertical-align: middle;">
+                    <form action="{{ url_for('shopping_cart.remove_item', item_id=item.id) }}" method="post">
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-minus"></i></button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="5" style="vertical-align: middle;">Total</th>
+                <th style="vertical-align: middle;">{{ "%.2f"|format(total_price) }} €</th>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="row">
+        <div class="col text-right">
+            <button type="button" class="btn btn-success btn-lg">Payer</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

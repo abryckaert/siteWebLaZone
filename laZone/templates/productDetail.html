@@ -4,19 +4,67 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Détail du Produit</h2>
     <div class="row">
         <div class="col-md-6">
-            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid" style="max-width: 75%; height: auto; display: block; margin: 0 auto;">
         </div>
         <div class="col-md-6">
             <div class="card-body">
-                <h3 class="card-title">{{ product.name }}</h5>
+                <h3 class="card-title">{{ product.name }}</h3>
+                <h4 class="card-text">{{ "%.2f"|format(product.price) }} €</h4>
+                <br>
                 <p class="card-text">{{ product.description }}</p>
-                <h4 class="card-text">Prix: {{ "%.2f"|format(product.price) }} €</h4>
-                <!-- Buttons for actions -->
-                <button type="button" class="btn btn-secondary">Laisser un commentaire</button>
-                <button type="button" class="btn btn-primary">Ajouter au Panier</button>
+                <p style="color: green;">En stock</p>
+                <b>Livraison gratuite en France métropolitaine</b>
+                <br>
+                <br>
+                <div class="d-flex align-items-center">
+                    <form action="{{ url_for('product.add_to_cart', product_id=product.id) }}" method="post" class="d-inline-block mr-1">
+                        <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                    </form>
+                    <form action="{{ url_for('product.add_to_favorite', product_id=product.id) }}" method="post" class="d-inline-block">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                
+                <br>
+                <br>
+                <div>
+                    <h3>Commentaires</h3>
+                    {% if feedbacks %}
+                        {% for feedback in feedbacks %}
+                        <div class="comment mb-4">
+                            <div class="row">
+                                <div class="col-12 mb-2">
+                                    <small>{{ feedback.created_at.strftime('%d-%m-%Y %H:%M') }}</small>
+                                </div>
+                                <div class="col-md-1">
+                                    <img src="{{ feedback.feedback_user.profil_image_url | default('/static/default_profile.png') }}" alt="{{ feedback.feedback_user.first_name }}" class="rounded-circle" style="width: 30px;">
+                                </div>
+                                <div class="col-md-10">
+                                    <strong>{{ feedback.feedback_user.first_name }} :</strong>
+                                    <p>{{ feedback.content }}</p>
+                                </div>
+                                <div class="col-md-1">
+                                    <form action="{{ url_for('product.delete_comment', comment_id=feedback.id) }}" method="post">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete Comment"><i class="fa fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Pas encore de commentaire</p>
+                    {% endif %}
+                </div>
+                
+                <form action="{{ url_for('product.add_comment', product_id=product.id) }}" method="post">
+                    <textarea class="form-control" name="comment" placeholder="Votre commentaire ici..." required></textarea>
+                    <button type="submit" class="btn btn-secondary mt-2">Laisser un commentaire</button>
+                </form>                
             </div>
         </div>
     </div>

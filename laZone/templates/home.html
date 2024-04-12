@@ -7,17 +7,16 @@
     <h2>Tous les produits</h2>
     <div class="row">
         {% for product in products %}
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4"> 
             <div class="card" style="cursor: pointer;" onclick="window.location.href='{{ url_for('product.productDetail', product_id=product.id) }}';">
                 <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="width: 100%;">
                 <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">{{ product.description | default('No description available', true) }}</p>
-                    <p class="card-text">Prix: {{ "%.2f"|format(product.price) }}€</p>
+                    <h6 class="card-title" style="font-weight: bold;">{{ product.name }}</h6>
+                    <p class="card-text">{{ "%.2f"|format(product.price) }}€</p>
                 </div>
             </div>
         </div>
-        {% if (loop.index0 + 1) % 3 == 0 %}
+        {% if (loop.index0 + 1) % 4 == 0 %} <!-- Adjusted for four cards per row -->
             </div><div class="row">
         {% endif %}
         {% endfor %}

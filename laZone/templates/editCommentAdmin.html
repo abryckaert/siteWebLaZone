@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Comment</h2>
+    <form action="{{ url_for('productEdit.edit_comment', comment_id=feedback.id) }}" method="post">
+        <div class="form-group">
+            <label for="content">Commentaire:</label>
+            <textarea class="form-control" id="content" name="content" required>{{ feedback.content }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Mettre a jour le commentaire</button>
+    </form>
+</div>
+{% endblock %}

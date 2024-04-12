@@ -24,11 +24,19 @@
         </div>
         <div class="form-group">
             <label for="category">Catégorie</label>
-            <input type="text" class="form-control" id="category" name="category" value="{{ product.category }}" required>
+            <select class="form-control" id="category" name="category_id">
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id == product.category_id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group">
             <label for="brand">Marque</label>
-            <input type="text" class="form-control" id="brand" name="brand" value="{{ product.brand }}" required>
+            <select class="form-control" id="brand" name="brand_id">
+                {% for brand in brands %}
+                <option value="{{ brand.id }}" {% if brand.id == product.brand_id %}selected{% endif %}>{{ brand.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group">
             <label for="image_url">Image actuelle</label>

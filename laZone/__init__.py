@@ -1,6 +1,7 @@
 import os
-from flask import Flask
-from flask_login import LoginManager
+from flask import Flask, jsonify, render_template, request
+from flask_login import LoginManager, current_user
+from laZone.models import Brand, CartItem, Product
 from .extensions import db  
 from .admin import admin_bp
 from .views import views
@@ -8,6 +9,7 @@ from .auth import auth
 from .productsAdmin import product
 from .products import product_blueprint
 from .editProfile import edit
+from .shoppingCart import shopping_cart_blueprint
 
 DB_NAME = "database.db"
 
@@ -24,8 +26,9 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(product)  
     app.register_blueprint(admin_bp)
-    app.register_blueprint(product_blueprint)  
+    app.register_blueprint(product_blueprint, url_prefix='/product')
     app.register_blueprint(edit)
+    app.register_blueprint(shopping_cart_blueprint  )
 
 
     login_manager = LoginManager()
@@ -39,11 +42,34 @@ def create_app():
 
     create_database(app)  
 
+    @app.context_processor
+    def inject_cart_count():
+        if current_user.is_authenticated:
+            cart_items = CartItem.query.filter_by(user_id=current_user.id).all()
+            cart_count = sum(item.quantity for item in cart_items)
+        else:
+            cart_count = 0
+        return {'cart_count': cart_count}
+    
+    @app.route('/search', methods=['GET'])
+    def search():
+        query = request.args.get('query', '')
+        if not query:
+            return render_template('listProduct.html', error="No search term provided.")
+
+        product_results = Product.query.filter(Product.name.ilike('%' + query + '%')).all()
+        brand_results = Brand.query.filter(Brand.name.ilike('%' + query + '%')).all()
+
+        from markupsafe import escape
+        messageAction = 'Resultat de votre recherche "' + escape(query) + '"'
+        
+        return render_template('listProduct.html', products=product_results, messageAction=messageAction)
     return app
 
 def create_database(app):
-    """Crée la base de données si elle n'existe pas déjà."""
     with app.app_context():
         if not os.path.exists(DB_NAME):
             db.create_all()
             print('Created Database!')
+
+

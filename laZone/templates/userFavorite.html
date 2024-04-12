@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Vos Favoris{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Vos Favoris</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Produit</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for favorite in favorites %}
+            <tr>
+                <td style="vertical-align: middle;">
+                    <img src="{{ favorite.product.image_url }}" alt="{{ favorite.product.name }}" style="width: 70px; height: auto;"> 
+                </td>
+                <td style="vertical-align: middle;">{{ favorite.product.name }}</td>
+                <td style="vertical-align: middle;">
+                    <form action="{{ url_for('product.remove_from_favorites', favorite_id=favorite.id) }}" method="post">
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Retirer</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

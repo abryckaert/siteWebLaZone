@@ -16,7 +16,7 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user, remember=True)
             flash('Logged in successfully!', category='success')
-            return redirect(url_for('views.home'))  # Redirect all users to home page after successful login
+            return redirect(url_for('views.home'))      
         elif not user:
             flash('Email does not exist.', category='error')
         else:
