@@ -1,25 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}Tableau de Bord Admin{% endblock %}
+{% block title %}Bienvenue sur LaZone{% endblock %}
 
 {% block content %}
+{% include 'news.html' %}
 <div class="container mt-4">
-    <h2>Liste des Produits</h2>
+    <h5 style="font-family:'Archivo Black';">Collection printemps :</h5>
     <div class="row">
         {% for product in products %}
         <div class="col-md-3 mb-4"> 
-            <div class="card">
+            <div class="card" style="cursor: pointer;" onclick="window.location.href='{{ url_for('productEdit.edit_product', product_id=product.id) }}';">
                 <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="width: 100%;">
                 <div class="card-body">
                     <h6 class="card-title" style="font-weight: bold;">{{ product.name }}</h6>
-                    <p class="card-text">{{ product.description | default('No description available', true) }}</p>
-                    <p class="card-text">Prix: {{ "%.2f"|format(product.price) }}€</p>
-                    <p class="card-text">Stock: {{ product.stock }}</p>
+                    <p class="card-text">{{ "%.2f"|format(product.price) }}€</p>
                     <a href="{{ url_for('productEdit.edit_product', product_id=product.id) }}" class="btn btn-danger" style="width: 100%; margin-top: 10px;">Modifier</a>
                 </div>
             </div>
         </div>
-        {% if (loop.index0 + 1) % 4 == 0 %}  <!-- Adjusted for four cards per row -->
+        {% if (loop.index0 + 1) % 4 == 0 %} <!-- Adjusted for four cards per row -->
             </div><div class="row">
         {% endif %}
         {% endfor %}

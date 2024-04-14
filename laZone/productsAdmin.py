@@ -1,18 +1,24 @@
 from urllib.request import Request
-from flask import Blueprint, Flask, current_app, request, redirect, url_for, render_template, flash
-from flask_login import login_required
+from flask import Blueprint, Flask, abort, current_app, request, redirect, url_for, render_template, flash
+from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import os
+
+from .extensions import admin_required
 from .extensions import db
 from .models import Feedback, Product
 from .models import Brand
 from .models import Category
+import time  
 
 app = Flask(__name__)
 product = Blueprint('productEdit', __name__, url_prefix='/admin/productEdit')
 
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+
 @product.route('/add_product', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def add_product():
     if request.method == 'POST':
         name = request.form['name']
@@ -49,11 +55,13 @@ def allowed_file(filename):
 
 @product.route('/list_product', methods=['GET'])
 @login_required
+@admin_required
 def list_product():
     products = Product.query.all()
     return render_template('listProductAdmin.html', products=products)
 
 @login_required
+@admin_required
 @product.route('/edit_product/<int:product_id>', methods=['GET', 'POST'])
 def edit_product(product_id):
     product = Product.query.get_or_404(product_id)
@@ -61,33 +69,33 @@ def edit_product(product_id):
     brands = Brand.query.all()
 
     if request.method == 'POST':
-        try:
-            product.name = request.form['name']
-            product.description = request.form['description']
-            product.price = float(request.form.get('price', 0))  # Safely getting form data
-            product.stock = int(request.form.get('stock', 0))
-            product.category_id = int(request.form.get('category_id'))
-            product.brand_id = int(request.form.get('brand_id'))
+        product.name = request.form['name']
+        product.description = request.form['description']
+        product.price = float(request.form['price'])
+        product.stock = int(request.form['stock'])
+        product.category_id = int(request.form['category_id'])
+        product.brand_id = int(request.form['brand_id'])
 
-            if not Category.query.get(product.category_id):
-                raise Request("Selected category does not exist.")
-            if not Brand.query.get(product.brand_id):
-                raise Request("Selected brand does not exist.")
-
-            db.session.commit()
-            flash('Product updated successfully!', 'success')
-            return redirect(url_for('productEdit.list_product'))
-        except KeyError as e:
-            flash(f"Missing data: {str(e)}", 'error')
-        except ValueError as e:
-            flash(f"Invalid data format: {str(e)}", 'error')
-        except Request as e:
-            flash(str(e), 'error')
+        image_file = request.files['image_url']
+        if image_file and allowed_file(image_file.filename):
+            filename = secure_filename(image_file.filename)
+            filepath = os.path.join(current_app.root_path, 'static', 'productsImages', filename)
+            image_file.save(filepath)
+            # Ajouter un timestamp ou un paramètre unique pour éviter le cache du navigateur
+            product.image_url = f"/static/productsImages/{filename}?{int(time.time())}"
+        
+        db.session.commit()
+        flash('Product updated successfully!', 'success')
+        return redirect(url_for('productEdit.list_product'))
 
     return render_template('editProductAdmin.html', product=product, categories=categories, brands=brands)
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
 @product.route('/delete_comment/<int:comment_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_comment(comment_id):
     comment = Feedback.query.get_or_404(comment_id)
     if comment:
@@ -103,12 +111,14 @@ from .models import Feedback, Product
 
 @product.route('/list_comments', methods=['GET'])
 @login_required
+@admin_required
 def list_comments():
     comments = db.session.query(Feedback, Product).join(Product, Feedback.product_id == Product.id).all()
     return render_template('feedbackManagement.html', comments=comments)
 
 @product.route('/edit_comment/<int:comment_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_comment(comment_id):
     feedback = Feedback.query.get_or_404(comment_id)
     if request.method == 'POST':
@@ -120,9 +130,12 @@ def edit_comment(comment_id):
 
 @product.route('/admin/productEdit/delete_product/<int:product_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
     db.session.delete(product)
     db.session.commit()
     flash('Produit supprimé avec succès.', 'success')
     return redirect(url_for('productEdit.list_product'))
+
+

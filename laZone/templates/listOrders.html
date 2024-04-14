@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}List of Orders{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>All Orders</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User Image</th>
+                <th>User Name</th>
+                <th>Order ID</th>
+                <th>Purchase Date</th>
+                <th>Status</th>
+                <th>Total Price</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td><img src="{{ order.user.profil_image_url | default('/static/userImages/default.png') }}" alt="User Image" style="width: 50px; height: 50px; border-radius: 50%;"></td>
+                <td>{{ order.user.first_name }}</td>
+                <td>{{ order.id }}</td>
+                <td>{{ order.date_placed.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ order.status }}</td>
+                <td>€{{ "%.2f"|format(order.total_price) }}</td>
+                <td><a href="{{ url_for('shopping_cart.order_details', order_id=order.id) }}" class="btn btn-info">View Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

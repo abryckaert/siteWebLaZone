@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Détail de la commande{% endblock %}
+
+{% block content %}
+<h1>Order Details</h1>
+<div class="container mt-4">
+    <p>Date: {{ order.date_placed.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td><img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="width: 100px; height: auto;"></td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>€{{ "%.2f"|format(item.price) }}</td>
+                <td>€{{ "%.2f"|format(item.quantity * item.price) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

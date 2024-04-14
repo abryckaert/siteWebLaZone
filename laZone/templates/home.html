@@ -3,8 +3,9 @@
 {% block title %}Bienvenue sur LaZone{% endblock %}
 
 {% block content %}
+{% include 'news.html' %}
 <div class="container mt-4">
-    <h2>Tous les produits</h2>
+    <h5 style="font-family:'Archivo Black';">Collection printemps :</h5>
     <div class="row">
         {% for product in products %}
         <div class="col-md-3 mb-4"> 

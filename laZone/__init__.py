@@ -1,6 +1,6 @@
 import os
-from flask import Flask, jsonify, render_template, request
-from flask_login import LoginManager, current_user
+from flask import Flask, abort, jsonify, render_template, request
+from flask_login import LoginManager, current_user, login_required
 from laZone.models import Brand, CartItem, Product
 from .extensions import db  
 from .admin import admin_bp

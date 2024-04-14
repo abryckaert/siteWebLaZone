@@ -19,14 +19,12 @@
         <tbody>
             {% for item in cart_items %}
             <tr>
-                <td style="vertical-align: middle;">
-                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="width: 70px; height: auto;"> 
-                </td>
-                <td style="vertical-align: middle;">{{ item.product.name }}</td>
-                <td style="vertical-align: middle;">{{ "%.2f"|format(item.product.price) }} €</td>
-                <td style="vertical-align: middle;">{{ item.quantity }}</td>
-                <td style="vertical-align: middle;">{{ "%.2f"|format(item.product.price * item.quantity) }} €</td>
-                <td style="vertical-align: middle;">
+                <td><img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="width: 70px; height: auto;"></td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ "%.2f"|format(item.product.price) }} €</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ "%.2f"|format(item.product.price * item.quantity) }} €</td>
+                <td>
                     <form action="{{ url_for('shopping_cart.remove_item', item_id=item.id) }}" method="post">
                         <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-minus"></i></button>
                     </form>
@@ -36,14 +34,16 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="5" style="vertical-align: middle;">Total</th>
-                <th style="vertical-align: middle;">{{ "%.2f"|format(total_price) }} €</th>
+                <th colspan="5">Total</th>
+                <th>{{ "%.2f"|format(total_price) }} €</th>
             </tr>
         </tfoot>
     </table>
     <div class="row">
         <div class="col text-right">
-            <button type="button" class="btn btn-success btn-lg">Payer</button>
+            <form action="{{ url_for('shopping_cart.pay') }}" method="post">
+                <button type="submit" class="btn btn-success btn-lg">Payer</button>
+            </form>
         </div>
     </div>
 </div>

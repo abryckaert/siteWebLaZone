@@ -10,3 +10,4 @@ def homeAdmin():
         abort(403)  
     return render_template('home.html', user=current_user)
 
+

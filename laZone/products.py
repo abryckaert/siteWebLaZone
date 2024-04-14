@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from .extensions import db
-from .models import CartItem, Favorite, Feedback, Product, Category
+from .models import CartItem, Favorite, Feedback, Order, OrderItem, Product, Category
 
 product_blueprint = Blueprint('product', __name__, url_prefix='/product')
 
@@ -25,14 +25,14 @@ def list_casquettes_products():
     products = Product.query.join(Category).filter(Category.name == 'Casquettes').all()
     if current_user.is_authenticated and current_user.admin:
         return render_template('listProductAdmin.html', products=products, messageAction="Nos Casquettes")
-    return render_template('listProduct.html', products=products, messageAction="Nos Casquettes")
+    return render_template('listProduct.html', products=products, messageAction="Nos casquettes")
 
 @product_blueprint.route('/chaussures', methods=['GET'])
 def list_chaussures_products():
     products = Product.query.join(Category).filter(Category.name == 'Chaussures').all()
     if current_user.is_authenticated and current_user.admin:
         return render_template('listProductAdmin.html', products=products, messageAction="Nos Chaussures")
-    return render_template('listProduct.html', products=products, messageAction="Nos Chaussures")
+    return render_template('listProduct.html', products=products, messageAction="Nos chaussures")
 
 @product_blueprint.route('/chaussettes', methods=['GET'])
 def list_chaussettes_products():
@@ -138,3 +138,4 @@ def remove_from_favorites(favorite_id):
 def display_favorites():
     favorites = Favorite.query.filter_by(user_id=current_user.id).join(Product, Favorite.product_id == Product.id).all()
     return render_template('userFavorite.html', favorites=favorites)
+

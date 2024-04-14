@@ -4,7 +4,8 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>{{ messageAction }}</h2>  <!-- Display the search results message -->
+    <h4 style="font-family:'Archivo Black';">{{ messageAction }} :</h4> 
+    <br>
     <div class="row">
         {% for product in products %}
         <div class="col-md-3 mb-4">  
@@ -12,7 +13,6 @@
                 <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="width: 100%;">
                 <div class="card-body">
                     <h6 class="card-title" style="font-weight: bold;">{{ product.name }}</h6>
-                    <p class="card-text">{{ product.description | default('No description available', true) }}</p>
                     <p class="card-text">{{ "%.2f"|format(product.price) }}€</p>
                 </div>
             </div>

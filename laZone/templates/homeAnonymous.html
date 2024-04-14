@@ -3,8 +3,9 @@
 {% block title %}Bienvenue sur LaZone{% endblock %}
 
 {% block content %}
+{% include 'news.html' %}
 <div class="container mt-4">
-    <h2>Bienvenue</h2>
+    <h5 style="font-family:'Archivo Black';">Bienvenue</h5>
     <p>Créez un compte ou connectez-vous pour profiter des dernières nouveautés</p>
 
     <div class="row">
@@ -15,7 +16,7 @@
                 <div class="card-body">
                     <h6 class="card-title" style="font-weight: bold;">{{ product.name }}</h6>
                     <p class="card-text">{{ product.description | default('No description available', true) }}</p>
-                    <p class="card-text">Prix: {{ "%.2f"|format(product.price) }}€</p>
+                    <p class="card-text">{{ "%.2f"|format(product.price) }}€</p>
                 </div>
             </div>
         </div>

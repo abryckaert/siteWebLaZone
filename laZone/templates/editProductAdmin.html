@@ -6,37 +6,43 @@
 <h1>Modifier un produit</h1>
 <div class="container mt-4">
     <form action="{{ url_for('productEdit.edit_product', product_id=product.id) }}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="name">Nom du produit</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="name">Nom du produit</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="price">Prix</label>
+                <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" step="0.01" required>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="3">{{ product.description }}</textarea>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{ product.description }}</textarea>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="stock">Stock</label>
+                <input type="number" class="form-control" id="stock" name="stock" value="{{ product.stock }}" required>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="price">Prix</label>
-            <input type="number" class="form-control" id="price" name="price" value="{{ product.price }}" step="0.01" required>
-        </div>
-        <div class="form-group">
-            <label for="stock">Stock</label>
-            <input type="number" class="form-control" id="stock" name="stock" value="{{ product.stock }}" required>
-        </div>
-        <div class="form-group">
-            <label for="category">Catégorie</label>
-            <select class="form-control" id="category" name="category_id">
-                {% for category in categories %}
-                <option value="{{ category.id }}" {% if category.id == product.category_id %}selected{% endif %}>{{ category.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="brand">Marque</label>
-            <select class="form-control" id="brand" name="brand_id">
-                {% for brand in brands %}
-                <option value="{{ brand.id }}" {% if brand.id == product.brand_id %}selected{% endif %}>{{ brand.name }}</option>
-                {% endfor %}
-            </select>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="category">Catégorie</label>
+                <select class="form-control" id="category" name="category_id">
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == product.category_id %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="brand">Marque</label>
+                <select class="form-control" id="brand" name="brand_id">
+                    {% for brand in brands %}
+                    <option value="{{ brand.id }}" {% if brand.id == product.brand_id %}selected{% endif %}>{{ brand.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
         <div class="form-group">
             <label for="image_url">Image actuelle</label>
@@ -44,10 +50,12 @@
             <label for="new_image_url">Changer l'image</label>
             <input type="file" class="form-control-file" id="new_image_url" name="image_url">
         </div>
-        <button type="submit" class="btn btn-primary">Mettre à jour le produit</button>
-    </form>
-    <form action="{{ url_for('productEdit.delete_product', product_id=product.id) }}" method="post" style="display: inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
-        <button type="submit" class="btn btn-danger" style="margin-left: 10px;">Supprimer le produit</button>
+        <div class="d-flex">
+            <button type="submit" class="btn btn-primary">Mettre à jour le produit</button>
+            <form action="{{ url_for('productEdit.delete_product', product_id=product.id) }}" method="post" class="ml-2">
+                <button type="submit" class="btn btn-danger">Supprimer le produit</button>
+            </form>
+        </div>
     </form>
 </div>
 {% endblock %}
