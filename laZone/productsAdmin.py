@@ -81,7 +81,6 @@ def edit_product(product_id):
             filename = secure_filename(image_file.filename)
             filepath = os.path.join(current_app.root_path, 'static', 'productsImages', filename)
             image_file.save(filepath)
-            # Ajouter un timestamp ou un paramètre unique pour éviter le cache du navigateur
             product.image_url = f"/static/productsImages/{filename}?{int(time.time())}"
         
         db.session.commit()
@@ -104,7 +103,9 @@ def delete_comment(comment_id):
         flash("Comment deleted successfully.", "success")
     else:
         flash("Comment not found.", "error")
+    
     return redirect(url_for('productEdit.list_comments'))
+
 
 from flask import render_template
 from .models import Feedback, Product

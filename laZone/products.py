@@ -139,3 +139,20 @@ def display_favorites():
     favorites = Favorite.query.filter_by(user_id=current_user.id).join(Product, Favorite.product_id == Product.id).all()
     return render_template('userFavorite.html', favorites=favorites)
 
+@product_blueprint.route('/edit_comment/<int:product_id>/<int:comment_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user_comment(comment_id, product_id):
+    feedback = Feedback.query.get_or_404(comment_id)
+    product = Product.query.get_or_404(product_id)
+
+    if not current_user.admin and feedback.user_id != current_user.id:
+        flash("You do not have permission to edit this comment.", "danger")
+        return redirect(url_for('product.productDetail', product_id=product_id))
+
+    if request.method == 'POST':
+        feedback.content = request.form['content']
+        db.session.commit()
+        flash("Comment updated successfully.", "success")
+        return redirect(url_for('product.productDetail', product_id=product_id))
+
+    return render_template('editCommentUser.html', feedback=feedback, product=product)

@@ -49,6 +49,9 @@
                                     <p>{{ feedback.content }}</p>
                                 </div>
                                 <div class="col-md-1">
+                                    <a href="{{ url_for('product.edit_user_comment', product_id=product.id, comment_id=feedback.id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-pencil-alt"></i> Edit
+                                    </a>                                                                        
                                     <form action="{{ url_for('product.delete_comment', comment_id=feedback.id) }}" method="post">
                                         <button type="submit" class="btn btn-danger btn-sm" title="Delete Comment"><i class="fa fa-trash"></i></button>
                                     </form>
