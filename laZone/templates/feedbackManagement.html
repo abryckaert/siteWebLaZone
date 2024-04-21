@@ -27,12 +27,14 @@
                 <td>{{ feedback.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
                 <td>
                     <a href="{{ url_for('productEdit.edit_comment', comment_id=feedback.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
-                    <a href="{{ url_for('productEdit.delete_comment', comment_id=feedback.id) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                    <form action="{{ url_for('productEdit.delete_comment', comment_id=feedback.id) }}" method="post" style="display: inline-block;">
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                    </form>
                 </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="5">Pas de commentaire disponible</td>
+                <td colspan="5">Pas de commentaire disponible.</td>
             </tr>
             {% endfor %}
         </tbody>
