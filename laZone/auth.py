@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, timezone
-from .extensions import limiter
 from flask import Blueprint, app, redirect, render_template, request, flash, session, url_for, current_app
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
